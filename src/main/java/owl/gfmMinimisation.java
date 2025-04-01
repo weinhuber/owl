@@ -23,9 +23,16 @@ public class gfmMinimisation {
         LabelledFormula inputFormula = null;
 
 
+        // get all args and merge them together in case of white-space
+        StringBuilder sb = new StringBuilder();
+        for (String arg : args) {
+            sb.append(arg).append(" ");
+        }
+        String mergedArgs = sb.toString().trim();
+
         // get input from command line argument
         if (args.length > 0) {
-            inputFormula = LtlfParser.parse(args[0]);
+            inputFormula = LtlfParser.parse(mergedArgs);
             System.out.printf("Input formula: %s\n", inputFormula);
         } else {
             System.out.println("No input formula provided.");
