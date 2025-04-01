@@ -58,14 +58,14 @@ public class gfmMinimisation {
         var automataString = HoaWriter.toString(ldbaPostprocessed);
         System.out.println(automataString);
 
-        // write string to file
-        try {
-            FileWriter writer = new FileWriter("OWL_Optimised_" + inputFormula + ".hoa");
-            writer.write(automataString);
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        // write string to file
+//        try {
+//            FileWriter writer = new FileWriter("OWL_Optimised_" + inputFormula + ".hoa");
+//            writer.write(automataString);
+//            writer.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
 
     }
