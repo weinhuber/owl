@@ -477,3 +477,10 @@ nexusPublishing {
         sonatype()
     }
 }
+
+tasks.register<JavaExec>("runGfm") {
+    group = "application"
+    description = "Runs the gfmMinimisation class"
+    mainClass.set("owl.gfmMinimisation")
+    classpath = sourceSets["main"].runtimeClasspath
+}

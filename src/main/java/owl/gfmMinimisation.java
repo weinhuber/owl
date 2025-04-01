@@ -1,7 +1,6 @@
-import owl.automaton.AnnotatedStateOptimisation;
+package owl;
+
 import owl.automaton.acceptance.BuchiAcceptance;
-import owl.automaton.acceptance.optimization.AcceptanceOptimizations;
-import owl.automaton.algorithm.simulations.Transition;
 import owl.automaton.hoa.HoaWriter;
 import owl.ltl.LabelledFormula;
 import owl.ltl.parser.LtlfParser;
@@ -9,6 +8,8 @@ import owl.translations.LtlTranslationRepository;
 import owl.translations.ltl2ldba.AnnotatedLDBA;
 import owl.translations.ltl2ldba.AsymmetricLDBAConstruction;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,9 +19,21 @@ public class gfmMinimisation {
     public static void main(String[] args) {
 
 //        LabelledFormula inputFormula = LtlfParser.parse("GF(a & X(X(X(b))))");
-        LabelledFormula inputFormula = LtlfParser.parse("GF a & GF b & GF c");
+//        LabelledFormula inputFormula = LtlfParser.parse("GF a & GF b & GF c");
+        LabelledFormula inputFormula = null;
 
-        var ldba = AsymmetricLDBAConstruction.of(BuchiAcceptance.class).apply(inputFormula).copyAsMutable();
+
+        // get input from command line argument
+        if (args.length > 0) {
+            inputFormula = LtlfParser.parse(args[0]);
+            System.out.printf("Input formula: %s\n", inputFormula);
+        } else {
+            System.out.println("No input formula provided.");
+            System.exit(1);
+        }
+
+
+//        var ldba = AsymmetricLDBAConstruction.of(BuchiAcceptance.class).apply(inputFormula).copyAsMutable();
 
         Set<LtlTranslationRepository.Option> translationOptions = new HashSet<>();
 
@@ -38,6 +51,14 @@ public class gfmMinimisation {
         var automataString = HoaWriter.toString(ldbaPostprocessed);
         System.out.println(automataString);
 
+        // write string to file
+        try {
+            FileWriter writer = new FileWriter("OWL_Optimised_" + inputFormula + ".hoa");
+            writer.write(automataString);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
