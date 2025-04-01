@@ -78,9 +78,9 @@ idea {
 }
 
 val os = DefaultNativePlatform.getCurrentOperatingSystem()!!
-val buildMarkdown = !os.isWindows && !project.hasProperty("disable-pandoc")
-val staticNativeExecutable = project.hasProperty("static-native-executable")
-val enableNativeAssertions = project.hasProperty("enable-native-assertions")
+//val buildMarkdown = !os.isWindows && !project.hasProperty("disable-pandoc")
+//val staticNativeExecutable = project.hasProperty("static-native-executable")
+//val enableNativeAssertions = project.hasProperty("enable-native-assertions")
 
 repositories {
     mavenCentral()
@@ -253,100 +253,100 @@ val buildKissat = tasks.register<Exec>("buildKissat") {
 
 tasks.test.configure { dependsOn(buildKissat) }
 
-val buildNativeLibrary = tasks.register<Exec>("buildNativeLibrary") {
-    group = "native"
-    description = "Compile the native library"
-    dependsOn(tasks.jar, buildKissat)
+//val buildNativeLibrary = tasks.register<Exec>("buildNativeLibrary") {
+//    group = "native"
+//    description = "Compile the native library"
+//    dependsOn(tasks.jar, buildKissat)
+//
+//    mkdir("${buildDir}/native-library")
+//    workingDir("${buildDir}/native-library")
+//
+//    val command = (System.getenv("GRAAL_HOME")?.let { "${it}/bin/" } ?: "") + "native-image"
+//
+//    commandLine(
+//        command,
+//        "owl.cinterface.CInterface", "owl",
+//        "-cp", sourceSets["main"].runtimeClasspath.asPath,
+//        if (enableNativeAssertions) "-ea" else "-da",
+//        "-DowlInclude=${projectDir}/src/main/c/include",
+//        "--shared",
+//        "--initialize-at-build-time=com.google,org.antlr,de.tum,owl",
+//        "--link-at-build-time=com.google,org.antlr,de.tum,owl",
+//        "--no-fallback",
+//        // (uncomment for performance analysis)
+//        // "-H:+PrintAnalysisCallTree",
+//        // "-H:DashboardDump=reports/graalvm-dashboard.dump",
+//        // "-H:+DashboardAll",
+//        "-H:+ReportExceptionStackTraces",
+//        // "-H:-UseServiceLoaderFeature",
+//        "-Djava.lang.Integer.IntegerCache.high=1024" // Cache more boxed integers.
+//    )
+//
+//    (System.getenv("CC"))?.let { args("-H:CCompilerPath=${it}") }
+//
+//    outputs.files(
+//        file("${project.buildDir}/native-library/graal_isolate.h"),
+//        file("${project.buildDir}/native-library/graal_isolate_dynamic.h"),
+//        file("${project.buildDir}/native-library/owl.h"),
+//        file("${project.buildDir}/native-library/owl_dynamic.h"),
+//        file("${project.buildDir}/native-library/owl." + (if (os.isMacOsX) "dylib" else "so")),
+//    )
+//}
 
-    mkdir("${buildDir}/native-library")
-    workingDir("${buildDir}/native-library")
-
-    val command = (System.getenv("GRAAL_HOME")?.let { "${it}/bin/" } ?: "") + "native-image"
-
-    commandLine(
-        command,
-        "owl.cinterface.CInterface", "owl",
-        "-cp", sourceSets["main"].runtimeClasspath.asPath,
-        if (enableNativeAssertions) "-ea" else "-da",
-        "-DowlInclude=${projectDir}/src/main/c/include",
-        "--shared",
-        "--initialize-at-build-time=com.google,org.antlr,de.tum,owl",
-        "--link-at-build-time=com.google,org.antlr,de.tum,owl",
-        "--no-fallback",
-        // (uncomment for performance analysis)
-        // "-H:+PrintAnalysisCallTree",
-        // "-H:DashboardDump=reports/graalvm-dashboard.dump",
-        // "-H:+DashboardAll",
-        "-H:+ReportExceptionStackTraces",
-        // "-H:-UseServiceLoaderFeature",
-        "-Djava.lang.Integer.IntegerCache.high=1024" // Cache more boxed integers.
-    )
-
-    (System.getenv("CC"))?.let { args("-H:CCompilerPath=${it}") }
-
-    outputs.files(
-        file("${project.buildDir}/native-library/graal_isolate.h"),
-        file("${project.buildDir}/native-library/graal_isolate_dynamic.h"),
-        file("${project.buildDir}/native-library/owl.h"),
-        file("${project.buildDir}/native-library/owl_dynamic.h"),
-        file("${project.buildDir}/native-library/owl." + (if (os.isMacOsX) "dylib" else "so")),
-    )
-}
-
-val buildNativeExecutable = tasks.register<Exec>("buildNativeExecutable") {
-    group = "native"
-    description = "Compile the native executable"
-    dependsOn(tasks.jar, buildKissat)
-
-    mkdir("${buildDir}/native-executable")
-    workingDir("${buildDir}/native-executable")
-
-    val graalHome = System.getenv("GRAAL_HOME")
-    val command = (if (graalHome == null) "" else "$graalHome/bin/") + "native-image"
-
-    // TODO: remove dependency on header files.
-    commandLine(
-        command,
-        "owl",
-        "-jar", tasks.jar.get().archiveFile.get(),
-        "-cp", sourceSets["main"].runtimeClasspath.asPath,
-        if (enableNativeAssertions) "-ea" else "-da",
-        "-DowlInclude=${projectDir}/src/main/c/include",
-        "--features=owl.command.OwlCommandRuntimeReflectionRegistrationFeature",
-        "--initialize-at-build-time=com.google,org.antlr,de.tum,owl",
-        "--link-at-build-time=com.google,org.antlr,de.tum,owl",
-        "--no-fallback",
-        // (uncomment for performance analysis)
-        // "-H:+PrintAnalysisCallTree",
-        // "-H:DashboardDump=reports/graalvm-dashboard.dump",
-        // "-H:+DashboardAll",
-        "-H:+ReportExceptionStackTraces",
-        "-Djava.lang.Integer.IntegerCache.high=1024" // Cache more boxed integers.
-    )
-
-    if (staticNativeExecutable) {
-        args("--static", "--libc=musl")
-        (System.getenv("MUSL_CC"))?.let { args("-H:CCompilerPath=${it}") }
-    } else {
-        (System.getenv("CC"))?.let { args("-H:CCompilerPath=${it}") }
-    }
-
-    outputs.file("${buildDir}/native-executable/owl")
-}
+//val buildNativeExecutable = tasks.register<Exec>("buildNativeExecutable") {
+//    group = "native"
+//    description = "Compile the native executable"
+//    dependsOn(tasks.jar, buildKissat)
+//
+//    mkdir("${buildDir}/native-executable")
+//    workingDir("${buildDir}/native-executable")
+//
+//    val graalHome = System.getenv("GRAAL_HOME")
+//    val command = (if (graalHome == null) "" else "$graalHome/bin/") + "native-image"
+//
+//    // TODO: remove dependency on header files.
+//    commandLine(
+//        command,
+//        "owl",
+//        "-jar", tasks.jar.get().archiveFile.get(),
+//        "-cp", sourceSets["main"].runtimeClasspath.asPath,
+//        if (enableNativeAssertions) "-ea" else "-da",
+//        "-DowlInclude=${projectDir}/src/main/c/include",
+//        "--features=owl.command.OwlCommandRuntimeReflectionRegistrationFeature",
+//        "--initialize-at-build-time=com.google,org.antlr,de.tum,owl",
+//        "--link-at-build-time=com.google,org.antlr,de.tum,owl",
+//        "--no-fallback",
+//        // (uncomment for performance analysis)
+//        // "-H:+PrintAnalysisCallTree",
+//        // "-H:DashboardDump=reports/graalvm-dashboard.dump",
+//        // "-H:+DashboardAll",
+//        "-H:+ReportExceptionStackTraces",
+//        "-Djava.lang.Integer.IntegerCache.high=1024" // Cache more boxed integers.
+//    )
+//
+//    if (staticNativeExecutable) {
+//        args("--static", "--libc=musl")
+//        (System.getenv("MUSL_CC"))?.let { args("-H:CCompilerPath=${it}") }
+//    } else {
+//        (System.getenv("CC"))?.let { args("-H:CCompilerPath=${it}") }
+//    }
+//
+//    outputs.file("${buildDir}/native-executable/owl")
+//}
 
 // ---------------- Documentation ----------------
 
 // Compile the markdown files
-val compileMarkdown = tasks.register<Exec>("compileMarkdown") {
-    group = "documentation"
-
-    executable("scripts/render-markdown.sh")
-    outputs.dir("${project.buildDir}/docs/markdown")
-    args("${project.buildDir}/docs/markdown")
-    onlyIf {
-        buildMarkdown
-    }
-}
+//val compileMarkdown = tasks.register<Exec>("compileMarkdown") {
+//    group = "documentation"
+//
+//    executable("scripts/render-markdown.sh")
+//    outputs.dir("${project.buildDir}/docs/markdown")
+//    args("${project.buildDir}/docs/markdown")
+//    onlyIf {
+//        buildMarkdown
+//    }
+//}
 
 tasks.javadoc.configure {
     options {
@@ -364,7 +364,7 @@ tasks.javadoc.configure {
 
 val nativeDistributionOsIdentifier =
     if (os.isMacOsX) "macos"
-    else if (os.isLinux) (if (staticNativeExecutable) "linux-musl" else "linux-glibc")
+//    else if (os.isLinux) (if (staticNativeExecutable) "linux-musl" else "linux-glibc")
     else if (os.isWindows) "windows"
     else "unknown"
 val nativeDistributionName = "owl-${nativeDistributionOsIdentifier}-amd64"
@@ -376,7 +376,7 @@ distributions {
         contents {
             from("AUTHORS")
             from("LICENSE")
-            from(compileMarkdown)
+//            from(compileMarkdown)
 
             into("bin") {
                 from(buildKissat) {
@@ -392,31 +392,31 @@ distributions {
         }
     }
 
-    create("nativeImage") {
-        distributionBaseName.set(nativeDistributionName)
-        contents {
-            from("AUTHORS")
-            from("LICENSE")
-            from(compileMarkdown)
-
-            into("bin") {
-                from(buildKissat) {
-                    include("kissat")
-                }
-                from("scripts/rabinizer.sh")
-                from(buildNativeExecutable)
-            }
-            into("lib") {
-                from("${projectDir}/src/main/c/include")
-                from(buildNativeLibrary)
-            }
-            into("jar") {
-                from(tasks.jar)
-                from(tasks.getByPath(":sourcesJar"))
-                from(tasks.getByPath(":javadocJar"))
-            }
-        }
-    }
+//    create("nativeImage") {
+//        distributionBaseName.set(nativeDistributionName)
+//        contents {
+//            from("AUTHORS")
+//            from("LICENSE")
+////            from(compileMarkdown)
+//
+//            into("bin") {
+//                from(buildKissat) {
+//                    include("kissat")
+//                }
+//                from("scripts/rabinizer.sh")
+////                from(buildNativeExecutable)
+//            }
+//            into("lib") {
+//                from("${projectDir}/src/main/c/include")
+////                from(buildNativeLibrary)
+//            }
+//            into("jar") {
+//                from(tasks.jar)
+//                from(tasks.getByPath(":sourcesJar"))
+//                from(tasks.getByPath(":javadocJar"))
+//            }
+//        }
+//    }
 }
 
 // ---------------- Publishing ----------------

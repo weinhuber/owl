@@ -909,7 +909,7 @@ public final class LtlTranslationRepository {
     }
   }
 
-  private static <A extends EmersonLeiAcceptance>
+  public static <A extends EmersonLeiAcceptance>
   Function<LabelledFormula, Automaton<?, ? extends A>>
   applyPreAndPostProcessing(
       Function<LabelledFormula, ? extends Automaton<?, ? extends A>> function,
