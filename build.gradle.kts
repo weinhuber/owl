@@ -393,6 +393,13 @@ tasks.register<JavaExec>("runGfm") {
     classpath = sourceSets["main"].runtimeClasspath
 }
 
+tasks.register<JavaExec>("ltl2ldba") {
+    group = "application"
+    description = "Runs ltl2ldba"
+    mainClass.set("owl.ltl2ldba")
+    classpath = sourceSets["main"].runtimeClasspath
+}
+
 tasks.shadowJar {
     archiveBaseName.set("fatowl")
     archiveClassifier.set("")
