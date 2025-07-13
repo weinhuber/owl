@@ -20,19 +20,13 @@
 package owl.automaton.hoa;
 
 import java.io.StringWriter;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import javax.annotation.Nullable;
 import owl.automaton.Automaton;
 import owl.automaton.edge.Edge;
 import owl.bdd.BddSet;
+import owl.collections.ImmutableBitSet;
+import owl.logic.propositional.PropositionalFormula;
 import owl.thirdparty.jhoafparser.ast.AtomLabel;
 import owl.thirdparty.jhoafparser.consumer.HOAConsumer;
 import owl.thirdparty.jhoafparser.consumer.HOAConsumerException;
@@ -143,7 +137,7 @@ public final class HoaWriter {
         }
 
         consumer.addEdgeWithLabel(stateId,
-          valuationSet.toExpression().map(AtomLabel::createAPIndex),
+          DnfLabelOf(valuationSet),
           List.of(numbering.get(edge.successor())),
           edge.colours());
       }
@@ -152,6 +146,37 @@ public final class HoaWriter {
     }
 
     consumer.notifyEnd();
+  }
+
+  private static PropositionalFormula<AtomLabel> DnfLabelOf(BddSet valuationSet) {
+
+    if (valuationSet.isUniverse()) {
+      return PropositionalFormula.trueConstant();
+    }
+
+    if (valuationSet.isEmpty()) {
+      return PropositionalFormula.falseConstant();
+    }
+
+    BitSet support = valuationSet.support();
+    ImmutableBitSet immSupport = ImmutableBitSet.copyOf(support);
+    List<PropositionalFormula<AtomLabel>> disjuncts = new ArrayList<>();
+
+    for (Iterator<BitSet> it = valuationSet.iterator(immSupport); it.hasNext(); ) {
+      BitSet valuation = it.next();
+      List<PropositionalFormula<AtomLabel>> conjuncts = new ArrayList<>();
+
+      for (int var = support.nextSetBit(0); var >= 0; var = support.nextSetBit(var + 1)) {
+        AtomLabel atom = AtomLabel.createAPIndex(var);
+        conjuncts.add(valuation.get(var)
+                ? PropositionalFormula.Variable.of(atom)
+                : PropositionalFormula.Negation.of(PropositionalFormula.Variable.of(atom)));
+      }
+
+      disjuncts.add(PropositionalFormula.Conjunction.of(conjuncts));
+    }
+
+    return PropositionalFormula.Disjunction.of(disjuncts);
   }
 
   static final class Numbering<S> {
